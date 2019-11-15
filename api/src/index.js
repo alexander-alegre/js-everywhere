@@ -1,2 +1,10 @@
-// index.js
-// This is the main entry point of our application
+const express = require('express');
+
+const app = express();
+const PORT = process.env.PORT || 4000;
+
+app.get('/', (req, res) => {
+  res.send('Hello world!');
+});
+
+app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
