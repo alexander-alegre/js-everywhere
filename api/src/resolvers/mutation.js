@@ -1,23 +1,13 @@
-// const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken');
-// const {
-//   AuthenticationError,
-//   ForbiddenError,
-// } = require('apollo-server-express');
-// const mongoose = require('mongoose');
-// require('dotenv').config();
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const {
+  AuthenticationError,
+  ForbiddenError,
+} = require('apollo-server-express');
+const mongoose = require('mongoose');
+require('dotenv').config();
 
-// const gravatar = require('../util/gravatar');
-
-// const saltRounds = 10;
-
-// const passwordEncrypt = async password => await bcrypt.hash(password, rounds);
-// const checkPassword = async (plainTextPassword, hashedPassword) => {
-//   return await bcrypt.compare(hashedPassword, plainTextPassword);
-// };
-// const generateJWT = async user =>
-//   await jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-// validateJWT = async token => await jwt.verify(token, process.env.JWT_SECRET);
+const gravatar = require('../util/gravatar');
 
 module.exports = {
   newNote: async (_parent, args, { models }) => {
@@ -45,6 +35,24 @@ module.exports = {
     } catch (error) {
       console.error(error);
       throw new Error('Error updating note');
+    }
+  },
+  signUp: async (parent, { username, email, password }, { models }) => {
+    email = email.trim().toLowerCase();
+    username = username.trim().toLowerCase();
+    const hashed = await bcrypt.hash(password, 10);
+    const avatar = gravatar(email);
+    try {
+      const user = await models.User.create({
+        username,
+        email,
+        avatar,
+        password: hashed,
+      });
+      return await jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error creating account');
     }
   },
 };
