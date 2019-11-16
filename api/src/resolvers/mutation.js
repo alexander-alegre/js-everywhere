@@ -37,7 +37,7 @@ module.exports = {
       throw new Error('Error updating note');
     }
   },
-  signUp: async (parent, { username, email, password }, { models }) => {
+  signUp: async (_parent, { username, email, password }, { models }) => {
     email = email.trim().toLowerCase();
     username = username.trim().toLowerCase();
     const hashed = await bcrypt.hash(password, 10);
@@ -54,5 +54,21 @@ module.exports = {
       console.error(error);
       throw new Error('Error creating account');
     }
+  },
+  signIn: async (_parent, { username, email, password }, { models }) => {
+    const user = await models.User.findOne({
+      $or: [{ email }, { username }],
+    });
+    if (!user) {
+      throw new AuthenticationError('Error signing in');
+    }
+
+    const valid = await bcrypt.compare(password, user.password);
+
+    if (!valid) {
+      throw new AuthenticationError('Error signing in');
+    }
+
+    return await jwt.sign({ id: user._id }, process.env.JWT_SECRET);
   },
 };
