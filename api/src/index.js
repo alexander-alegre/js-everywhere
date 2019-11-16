@@ -18,7 +18,7 @@ db.connect(DB_HOST);
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  content: () => ({ models }),
+  context: () => ({ models }),
 });
 
 // middleware
