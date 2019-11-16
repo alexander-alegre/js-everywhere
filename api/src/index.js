@@ -6,6 +6,7 @@ const db = require('./db');
 const models = require('./models');
 const typeDefs = require('./schema');
 const resolvers = require('./resolvers');
+const getUser = require('./util/getUser');
 
 const PORT = process.env.PORT || 4000;
 const DB_HOST = process.env.DB_HOST;
@@ -18,7 +19,11 @@ db.connect(DB_HOST);
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: () => ({ models }),
+  context: async ({ req }) => {
+    const token = req.headers.authorization;
+    const user = await getUser(token);
+    return { models, user };
+  },
 });
 
 // middleware
