@@ -1,5 +1,14 @@
 const express = require('express');
 const { ApolloServer, gql } = require('apollo-server-express');
+require('dotenv').config();
+
+const db = require('./db');
+
+const app = express();
+const PORT = process.env.PORT || 4000;
+const DB_HOST = process.env.DB_HOST;
+
+db.connect(DB_HOST);
 
 // mock data
 let notes = [
@@ -58,9 +67,6 @@ const resolvers = {
     },
   },
 };
-
-const app = express();
-const PORT = process.env.PORT || 4000;
 
 const server = new ApolloServer({ typeDefs, resolvers });
 server.applyMiddleware({ app, path: '/api' });
