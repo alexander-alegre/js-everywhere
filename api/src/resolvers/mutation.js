@@ -38,6 +38,13 @@ module.exports = {
     }
   },
   signUp: async (_parent, { username, email, password }, { models }) => {
+    const user = await models.User.findOne({
+      $or: [{ email }, { username }],
+    });
+    if (user) {
+      throw new Error('User already exists');
+    }
+
     email = email.trim().toLowerCase();
     username = username.trim().toLowerCase();
     const hashed = await bcrypt.hash(password, 10);
