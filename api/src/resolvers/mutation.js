@@ -1,3 +1,24 @@
+// const bcrypt = require('bcrypt');
+// const jwt = require('jsonwebtoken');
+// const {
+//   AuthenticationError,
+//   ForbiddenError,
+// } = require('apollo-server-express');
+// const mongoose = require('mongoose');
+// require('dotenv').config();
+
+// const gravatar = require('../util/gravatar');
+
+// const saltRounds = 10;
+
+// const passwordEncrypt = async password => await bcrypt.hash(password, rounds);
+// const checkPassword = async (plainTextPassword, hashedPassword) => {
+//   return await bcrypt.compare(hashedPassword, plainTextPassword);
+// };
+// const generateJWT = async user =>
+//   await jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+// validateJWT = async token => await jwt.verify(token, process.env.JWT_SECRET);
+
 module.exports = {
   newNote: async (_parent, args, { models }) => {
     return await models.Note.create({
